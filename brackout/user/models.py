@@ -37,7 +37,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(verbose_name='Active', default=True)
     is_staff = models.BooleanField(verbose_name='Staff', default=False)
 
-    age = models.FloatField(verbose_name='Age', blank=True, null=True)
+    birth_date = models.DateField(
+                                verbose_name='Birthday Date',
+                                blank=True, null=True)
     gender_choices = [
         ('MA', 'Male'),
         ('FE', 'Female'),

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, BaseUserManager
+from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
@@ -55,3 +56,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+    def get_age(self):
+        """
+        Get age of user
+        """
+        return (timezone.now().date() - self.birth_date).days/365
+
+    def is_joined_recently(self):
+        """
+        Check if the user has joined recently or not
+        """
+        return timezone.now()-timezone.timedelta(hours=24) \
+                <= self.date_joined \
+                <= timezone.now()
+
+    def get_gender(self):
+        if self.gender:
+            for g in self.gender_choices:
+                if self.gender in g:
+                    if g.index(self.gender)==0:
+                        return g[1]
+                    else:
+                        return g[1]
+        else:
+            return None

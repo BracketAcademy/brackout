@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'v2_@x5zk^71*s2gj2vdnbymud(xrqx*-bx4t12_br#&a6tlg=i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['bracket.pythonanywhere.com']
 
 
 # Application definition
@@ -127,3 +127,9 @@ STATIC_URL = '/static/'
 # Custom User Model
 
 AUTH_USER_MODEL = 'user.User'
+
+
+try:
+    from .local_settings import *
+except:
+    print("Hey pal it looks like you are in production stage!")

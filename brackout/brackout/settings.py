@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'v2_@x5zk^71*s2gj2vdnbymud(xrqx*-bx4t12_br#&a6tlg=i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['bracket.pythonanywhere.com']
 

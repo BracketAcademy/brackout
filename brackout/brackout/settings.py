@@ -26,11 +26,8 @@ SECRET_KEY = 'v2_@x5zk^71*s2gj2vdnbymud(xrqx*-bx4t12_br#&a6tlg=i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['bracket.pythonanywhere.com', 'http://localhost:8080']
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8080',
-)
+ALLOWED_HOSTS = [*]
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition

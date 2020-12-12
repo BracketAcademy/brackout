@@ -53,15 +53,19 @@ class User(AbstractBaseUser, PermissionsMixin):
                             choices=gender_choices,
                             blank=True, null=True)
 
-    objects = UserManager()
-
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('name',)
+
+    objects = UserManager()
 
     def get_age(self):
         """
         Get age of user
         """
-        return (timezone.now().date() - self.birth_date).days/365
+        if self.birth_date:
+            return (timezone.now().date() - self.birth_date).days//365
+        else:
+            return None
 
     def is_joined_recently(self):
         """

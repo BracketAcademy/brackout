@@ -66,7 +66,7 @@ class TestUser(TestCase):
         age = timezone.now().date() - test_user.birth_date
 
         self.assertEqual(
-            age.days/365,
+            age.days//365,
             test_user.get_age()
         )
 

@@ -6,9 +6,10 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 
-CREATE_USER_URL = reverse('user:create')
-TOKEN_URL = reverse('user:token')
-ME_URL = reverse('user:get-all-users')
+CREATE_USER_URL = reverse('user:create-user')
+TOKEN_URL = reverse('user:create-token')
+ME_URL = reverse('user:me')
+ALL_USERS_URL = reverse('user:get-all-users')
 
 
 def create_user(**params):
@@ -31,7 +32,7 @@ class PublicUserApiTest(TestCase):
         res = self.client.post(CREATE_USER_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        user = get_user_model().objects.get(**res.data)
+        user = get_user_model().objects.get(email=res.data['email'])
         self.assertTrue(user.check_password(payload['password']))
         self.assertNotIn('password', res.data)
 
@@ -138,17 +139,12 @@ class PrivateUserApiTest(TestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_retrieve_profile_success(self):
-        """Test retrieve profile for logged in user """
+        """Test retrieve profile for logged in user"""
         res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            res.data,
-            {
-                'name': self.user.name,
-                'email': self.user.email
-            }
-        )
+        self.assertEqual(res.data['email'], self.user.email)
+        self.assertEqual(res.data['name'], self.user.name)
 
     def test_post_me_not_allowed(self):
         """Test that POST is not allowed on me url """
@@ -168,3 +164,14 @@ class PrivateUserApiTest(TestCase):
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_get_all_users(self):
+        """Test that staff user can get all users"""
+        self.user.is_staff = True
+        res = self.client.get(ALL_USERS_URL)
+        all_users = get_user_model().objects.order_by('-date_joined')
+
+        self.assertEqual(len(res.data), len(all_users))
+        for c,i in enumerate(all_users):
+            self.assertEqual(i.email, res.data[c]['email'])
+            self.assertEqual(i.name, res.data[c]['name'])

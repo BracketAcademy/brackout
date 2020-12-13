@@ -67,7 +67,7 @@ class TestUser(TestCase):
 
         self.assertEqual(
             age.days//365,
-            test_user.get_age()
+            test_user.age()
         )
 
     def test_is_joined_recently_past(self):
@@ -94,22 +94,3 @@ class TestUser(TestCase):
         )
 
         self.assertFalse(test_user.is_joined_recently())
-
-    def test_get_gender(self):
-        """Test the get gender func"""
-        test_user = create_user('test@gmail.com', 'test123')
-        
-        test_user.gender = 'MA'
-        self.assertEqual(test_user.get_gender(), 'Male')
-
-        test_user.gender = 'FE'
-        self.assertEqual(test_user.get_gender(), 'Female')
-
-        test_user.gender = 'NS'
-        self.assertEqual(test_user.get_gender(), 'Prefer Not to Say')
-
-        test_user.gender = 'NB'
-        self.assertEqual(test_user.get_gender(), 'Non Binary')
-
-        test_user.gender = ''
-        self.assertEqual(test_user.get_gender(), None)

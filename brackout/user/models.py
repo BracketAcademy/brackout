@@ -58,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def get_age(self):
+    def age(self):
         """
         Get age of user
         """

@@ -5,6 +5,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.core.mail import EmailMessage
 from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
 
 
 class AcountActivation:    
@@ -37,7 +38,7 @@ class AcountActivation:
         activation_email = EmailMessage(
             subject='Activate your Acount',
             body=mail_body,
-            from_email='armanhadi728@gmail.com',
+            from_email=settings.EMAIL_HOST_USER,
             to=(self.user.email,)
         )
         activation_email.send(fail_silently=False)

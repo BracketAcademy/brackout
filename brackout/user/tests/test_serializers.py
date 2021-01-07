@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.core import mail
+from django.conf import settings
 
 from rest_framework.test import APIClient
 from rest_framework import status
@@ -25,16 +27,22 @@ class PublicUserApiTest(TestCase):
     def test_create_valid_user_success(self):
         """Test creating user with valid payload is successful """
         payload = {
-            'email': 'test@gmail.com',
+            'email': 'test@test.com',
             'password': 'test123',
             'name': 'Test Testy'
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, settings.EMAIL_HOST_USER)
+        self.assertEqual(mail.outbox[0].to, [res.data['email'],])
+
         user = get_user_model().objects.get(email=res.data['email'])
         self.assertTrue(user.check_password(payload['password']))
         self.assertNotIn('password', res.data)
+        self.assertFalse(user.is_active)
 
     def test_user_exists(self):
         """Test creating user that already exist """
@@ -124,6 +132,27 @@ class PublicUserApiTest(TestCase):
         res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        
+    '''
+    def test_send_activation_email(self):
+        """Test sending email for activating acounts"""
+        email_subject = 'test subject'
+        email_body = 'here is body'
+        email_from = 'armanhadi728@gmail.com'
+        email_to = ['test@test.com',]
+        mail.EmailMessage(
+            email_subject,
+            email_body,
+            email_from,
+            email_to
+        ).send()
+
+        self.assertEqual(len(mail.outbox), len(email_to))
+        self.assertEqual(mail.outbox[0].subject, email_subject)
+        self.assertEqual(mail.outbox[0].body, email_body)
+        self.assertEqual(mail.outbox[0].from_email, email_from)
+        self.assertEqual(mail.outbox[0].to, email_to)
+    '''
 
 
 class PrivateUserApiTest(TestCase):

@@ -1,5 +1,7 @@
 venv
 brackout/brackout/local_settings.py
+fandogh.yml
+.fandoghignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

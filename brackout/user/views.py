@@ -1,7 +1,12 @@
-from rest_framework import generics, permissions, authentication
+from rest_framework import generics, permissions, authentication, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+from django.utils.translation import ugettext_lazy as _
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_text
 from django.contrib.auth import get_user_model
 
 from .serializers import UserSerializer, AuthTokenSerializer
@@ -29,6 +34,24 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 class CreateUser(generics.CreateAPIView):
     """Creating new user"""
     serializer_class = UserSerializer
+
+
+class VerifyUser(APIView):
+    """Activate user's acount"""
+    def get(self, request, uidb64, token):
+        try:
+            id_decoded = urlsafe_base64_decode(force_text(uidb64))
+            user = get_user_model().objects.get(pk=id_decoded)
+        except:
+            user = None
+        if user:
+            user.is_active = True
+            user.save()
+            return Response(data=UserSerializer(user).data)
+        else:
+            return Response(
+                data={'detail': _('Invalid Activation Link')},
+                status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateAuthToken(ObtainAuthToken):

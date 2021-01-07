@@ -3,6 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
+from .acount_activation import AcountActivation
+
 
 class UserSerializer(serializers.ModelSerializer):
     ''' Serializer for User Model '''
@@ -20,7 +22,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         ''' Create a user with encrypted password and return it '''
-        return get_user_model().objects.create_user(**validated_data)
+        new_user = get_user_model().objects.create_user(**validated_data)
+        new_user.is_active = False
+        new_user.save()
+
+        activator = AcountActivation(self.context['request'], new_user)
+        activator.send_email()
+
+        return new_user
 
     def update(self, instance, validated_data):
         ''' Update and return a user '''

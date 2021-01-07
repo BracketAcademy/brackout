@@ -74,14 +74,3 @@ class User(AbstractBaseUser, PermissionsMixin):
         return timezone.now()-timezone.timedelta(hours=24) \
                 <= self.date_joined \
                 <= timezone.now()
-
-    def get_gender(self):
-        if self.gender:
-            for g in self.gender_choices:
-                if self.gender in g:
-                    if g.index(self.gender)==0:
-                        return g[1]
-                    else:
-                        return g[1]
-        else:
-            return None

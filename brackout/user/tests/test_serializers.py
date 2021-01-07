@@ -1,3 +1,5 @@
+from math import ceil
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -132,27 +134,6 @@ class PublicUserApiTest(TestCase):
         res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-        
-    '''
-    def test_send_activation_email(self):
-        """Test sending email for activating acounts"""
-        email_subject = 'test subject'
-        email_body = 'here is body'
-        email_from = 'armanhadi728@gmail.com'
-        email_to = ['test@test.com',]
-        mail.EmailMessage(
-            email_subject,
-            email_body,
-            email_from,
-            email_to
-        ).send()
-
-        self.assertEqual(len(mail.outbox), len(email_to))
-        self.assertEqual(mail.outbox[0].subject, email_subject)
-        self.assertEqual(mail.outbox[0].body, email_body)
-        self.assertEqual(mail.outbox[0].from_email, email_from)
-        self.assertEqual(mail.outbox[0].to, email_to)
-    '''
 
 
 class PrivateUserApiTest(TestCase):
@@ -197,10 +178,14 @@ class PrivateUserApiTest(TestCase):
     def test_get_all_users(self):
         """Test that staff user can get all users"""
         self.user.is_staff = True
-        res = self.client.get(ALL_USERS_URL)
+        page_size = settings.REST_FRAMEWORK['PAGE_SIZE']
         all_users = get_user_model().objects.order_by('-date_joined')
+        pages = ceil(len(all_users)/page_size)
 
-        self.assertEqual(len(res.data), len(all_users))
-        for c,i in enumerate(all_users):
-            self.assertEqual(i.email, res.data[c]['email'])
-            self.assertEqual(i.name, res.data[c]['name'])
+        for page in range(1, pages+1):
+            res = self.client.get(ALL_USERS_URL, data={'page': page})
+
+            self.assertLessEqual(len(res.data['results']), page_size)
+            for c,i in enumerate(res.data['results']):
+                self.assertEqual(i['email'], all_users[c].email)
+                self.assertEqual(i['name'], all_users[c].name)

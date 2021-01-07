@@ -155,6 +155,13 @@ EMAIL_HOST_PASSWORD = 'MohammadH@di123'
 EMAIL_PORT = 587
 
 
+# REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+}
+
+
 try:
     from .local_settings import *
 except:

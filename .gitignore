@@ -3,6 +3,9 @@ brackout/brackout/local_settings.py
 fandogh.yml
 .fandoghignore
 brackout/bullshit.json
+.env
+/brackout/.env
+/brackout/client_secret_392497874978-m7rrabc14nf3b9aupv6d06abimdo2695.apps.googleusercontent.com.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

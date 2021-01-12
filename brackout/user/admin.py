@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'name')
 
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'password', 'auth_provider')}),
         (_('Personal Info'),
             {'fields': ('name', 'birth_date', 'gender')}),
         (_('Permissions'),

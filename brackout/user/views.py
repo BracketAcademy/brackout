@@ -50,7 +50,7 @@ class VerifyUser(APIView):
             return Response(data=UserSerializer(user).data)
         else:
             return Response(
-                data={'detail': _('Invalid Activation Link')},
+                data={'error': _('Invalid Activation Link')},
                 status=status.HTTP_400_BAD_REQUEST)
 
 

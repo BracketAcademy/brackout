@@ -8,12 +8,13 @@ from .acount_activation import AcountActivation
 
 class UserSerializer(serializers.ModelSerializer):
     ''' Serializer for User Model '''
-    
+
     class Meta:
         model = get_user_model()
-        fields = ('id', 'email', 'password', 'name', 'gender',
-                'birth_date', 'age', 'date_joined', 'is_joined_recently',
-                'auth_provider', 'is_active', 'is_staff')
+        fields = (
+            'id', 'email', 'password', 'name', 'gender',
+            'birth_date', 'age', 'date_joined', 'is_joined_recently',
+            'auth_provider', 'is_active', 'is_staff')
         extra_kwargs = {
             'password': {'write_only': True, 'min_length': 5},
             'is_active': {'read_only': True},

@@ -42,7 +42,7 @@ class VerifyUser(APIView):
         try:
             id_decoded = urlsafe_base64_decode(force_text(uidb64))
             user = get_user_model().objects.get(pk=id_decoded)
-        except:
+        except Exception:
             user = None
         if user:
             user.is_active = True

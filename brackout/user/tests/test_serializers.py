@@ -39,7 +39,7 @@ class PublicUserApiTest(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].from_email, settings.EMAIL_HOST_USER)
-        self.assertEqual(mail.outbox[0].to, [res.data['email'],])
+        self.assertEqual(mail.outbox[0].to, [res.data['email'], ])
 
         user = get_user_model().objects.get(email=res.data['email'])
         self.assertTrue(user.check_password(payload['password']))
@@ -186,6 +186,6 @@ class PrivateUserApiTest(TestCase):
             res = self.client.get(ALL_USERS_URL, data={'page': page})
 
             self.assertLessEqual(len(res.data['results']), page_size)
-            for c,i in enumerate(res.data['results']):
+            for c, i in enumerate(res.data['results']):
                 self.assertEqual(i['email'], all_users[c].email)
                 self.assertEqual(i['name'], all_users[c].name)

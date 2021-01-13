@@ -82,6 +82,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Check if the user has joined recently or not
         """
-        return timezone.now()-timezone.timedelta(hours=24) \
-                <= self.date_joined \
-                <= timezone.now()
+        return \
+            timezone.now()-timezone.timedelta(hours=24) \
+            <= self.date_joined \
+            <= timezone.now()

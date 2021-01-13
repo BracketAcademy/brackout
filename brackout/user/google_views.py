@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.reverse import reverse
 
 from django.urls import reverse
 from django.shortcuts import redirect
@@ -11,7 +10,6 @@ from django.db import IntegrityError
 
 from google.auth.transport import requests
 from google.oauth2 import id_token
-from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 
 from os import getcwd
@@ -24,9 +22,10 @@ def obtain_flow(request):
     domain = get_current_site(request).domain
     flow = Flow.from_client_secrets_file(
         getcwd()+'/user/bull.json',
-        scopes=['openid',
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile'],
+        scopes=[
+            'openid',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile'],
         redirect_uri='http://'+domain+reverse('user:google-redirect')
     )
     return flow
@@ -41,7 +40,7 @@ def get_user_info(request, flow):
                 auth_token, requests.Request())
         if 'accounts.google.com' in user_info['iss']:
             return user_info
-    except:
+    except Exception:
         raise Exception("Invalid or Expired Token.")
 
 
@@ -58,12 +57,13 @@ class GoogleAuthorization(APIView):
         auth_uri = flow.authorization_url()
         return redirect(auth_uri[0])
 
+
 class GoogleRedirect(APIView):
     """Finilize Authentication"""
     def get(self, request):
         try:
             request.GET['code']
-        except:
+        except Exception:
             return Response(
                 data={'error': "Invalid Token!"},
                 status=status.HTTP_400_BAD_REQUEST
@@ -81,11 +81,16 @@ class GoogleRedirect(APIView):
             serializer = OAuthSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED)
+            return Response(
+                    serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
         except IntegrityError:
             return Response(
-                data={'email':
+                data={
+                    'email':
                     'user with this Email Address already exists.'},
                 status=status.HTTP_400_BAD_REQUEST
             )

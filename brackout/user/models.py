@@ -35,6 +35,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(
                                     verbose_name='Date Joined',
                                     auto_now_add=True)
+    provider_choices = [
+        ('EM', 'email'),
+        ('GO', 'google'),
+    ]
+    auth_provider = models.CharField(
+        verbose_name='Auth Provider',
+        max_length=2,
+        null=False,
+        choices=provider_choices,
+        default='email'
+    )
     is_active = models.BooleanField(verbose_name='Active', default=True)
     is_staff = models.BooleanField(verbose_name='Staff', default=False)
 
@@ -71,6 +82,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Check if the user has joined recently or not
         """
-        return timezone.now()-timezone.timedelta(hours=24) \
-                <= self.date_joined \
-                <= timezone.now()
+        return \
+            timezone.now()-timezone.timedelta(hours=24) \
+            <= self.date_joined \
+            <= timezone.now()

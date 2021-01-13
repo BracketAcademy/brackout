@@ -2,6 +2,8 @@ venv
 brackout/brackout/local_settings.py
 fandogh.yml
 .fandoghignore
+brackout/bullshit.json
+/brackout/user/bull.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

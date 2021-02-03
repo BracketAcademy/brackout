@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model, authenticate
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework.authtoken.models import Token
 from rest_framework import serializers
 
 from .acount_activation import AcountActivation
@@ -53,7 +54,7 @@ class AuthTokenSerializer(serializers.Serializer):
     )
 
     def validate(self, attrs):
-        ''' Validate and authenticate user '''
+        """Validate and authenticate user"""
         email = attrs.get('email')
         password = attrs.get('password')
 
@@ -82,8 +83,14 @@ class OAuthSerializer(serializers.Serializer):
     auth_provider = serializers.CharField()
 
     def create(self, validated_data):
-        ''' Create a user with encrypted password and return it '''
+        '''Create a user with encrypted password and return it'''
         new_user = get_user_model().objects.create_user(**validated_data)
         new_user.save()
+
+        authenticate(
+            request=self.context.get('request'),
+            username=validated_data['email'],
+            password=validated_data['password']
+        )
 
         return new_user

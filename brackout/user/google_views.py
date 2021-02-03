@@ -1,12 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import serializers, status
+from rest_framework.authtoken.models import Token
 
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.conf import settings
 from django.db import IntegrityError
+from django.contrib.auth import get_user_model
 
 from google.auth.transport import requests
 from google.oauth2 import id_token
@@ -59,7 +61,7 @@ class GoogleAuthorization(APIView):
 
 
 class GoogleRedirect(APIView):
-    """Finilize Authentication"""
+    """Finalize Authentication"""
     def get(self, request):
         try:
             request.GET['code']
@@ -76,13 +78,21 @@ class GoogleRedirect(APIView):
                 'email': user_info['email'],
                 'password': get_password(),
                 'name': user_info['name'],
-                'auth_provider': 'GO'
+                'auth_provider': 'GO',
             }
+
             serializer = OAuthSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
+                token, created = Token.objects.get_or_create(
+                    user=get_user_model().objects.get(
+                        email=serializer.data['email']
+                    )
+                )
+                data.update({'token': str(token)})
+                data.pop('password')
                 return Response(
-                    serializer.data,
+                    data,
                     status=status.HTTP_201_CREATED)
             return Response(
                     serializer.errors,

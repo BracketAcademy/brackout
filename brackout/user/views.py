@@ -20,7 +20,7 @@ class UserList(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
 
 
-class ManageUserView(generics.RetrieveUpdateAPIView):
+class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
     ''' Manage the authenticated user '''
     serializer_class = UserSerializer
     authentication_classes = (authentication.TokenAuthentication,)
@@ -37,7 +37,7 @@ class CreateUser(generics.CreateAPIView):
 
 
 class VerifyUser(APIView):
-    """Activate user's acount"""
+    """Activate user's account"""
     def get(self, request, uidb64, token):
         try:
             id_decoded = urlsafe_base64_decode(force_text(uidb64))

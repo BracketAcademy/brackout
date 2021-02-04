@@ -84,7 +84,8 @@ class OAuthSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         '''Create a user with encrypted password and return it'''
-        new_user = get_user_model().objects.create_user(**validated_data)
+        new_user = get_user_model().objects.create_or_get_user(
+            **validated_data)
         new_user.save()
 
         authenticate(

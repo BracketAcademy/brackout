@@ -55,6 +55,16 @@ class TestUser(TestCase):
         self.assertTrue(test_user.is_staff)
         self.assertTrue(test_user.is_superuser)
 
+    def test_create_or_get_user(self):
+        """Test create_or_get_user method"""
+        email = 'test@gmail.com'
+        password = 'test123'
+        test_user = get_user_model().objects.create_or_get_user(
+            email, password)
+        
+        self.assertTrue(test_user==get_user_model(
+            ).objects.create_or_get_user(email, password))
+
     def test_user_age(self):
         """ Test that user's age is calculated correctly """
         test_user = create_user(

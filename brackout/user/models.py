@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, BaseUserManager
@@ -26,6 +27,16 @@ class UserManager(BaseUserManager):
         user.save(self._db)
 
         return user
+
+    def create_or_get_user(self, email, password, **extra_fields):
+        """Create or get user with credentials"""
+        if not email:
+            raise ValueError('Email MUST be included!')
+        
+        if self.filter(email=email).count() == 0:
+            return self.create_user(email, password, **extra_fields)
+        else:
+            return self.get(email=email)
 
 
 class User(AbstractBaseUser, PermissionsMixin):

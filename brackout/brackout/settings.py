@@ -169,3 +169,8 @@ try:
     from .local_settings import *
 except:
     print("Hey pal it looks like you are in production stage!")
+
+try:
+    from .host_settings import *
+except:
+    print("hey pal you are not in your host")

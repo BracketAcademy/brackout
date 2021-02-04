@@ -5,6 +5,9 @@ fandogh.yml
 .fandoghignore
 brackout/bullshit.json
 /brackout/user/bull.json
+brackout/brackout/host_settings.py
+tmp/
+passenger_wsgi.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -25,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 with open(BASE_DIR / 'bullshit.json', 'r') as secs:
     secs = loads(secs.read())
     SECRET_KEY = secs['django']['SECRET_KEY']
+    EMAIL_PASSWORD = secs['passes']['NOREPLY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -152,9 +153,9 @@ AUTH_USER_MODEL = 'user.User'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_SSL = True
-EMAIL_HOST = 'mail.nextstudios.ir'
-EMAIL_HOST_USER = 'bracket@nextstudios.ir'
-EMAIL_HOST_PASSWORD = 'MohammadHadi123'
+EMAIL_HOST = 'bracketacademy.ir'
+EMAIL_HOST_USER = 'noreply@bracketacademy.ir'
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 EMAIL_PORT = 465
 
 

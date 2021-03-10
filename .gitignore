@@ -8,6 +8,7 @@ brackout/bullshit.json
 brackout/brackout/host_settings.py
 tmp/
 passenger_wsgi.py
+stderr.log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
